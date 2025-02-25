@@ -1,0 +1,2 @@
+MONGO_CONNECTION_URL =  "mongodb+srv://Mohit:mohit1234@mycluster.xouizko.mongodb.net/Inshare"
+APP_BASE_URL = http://localhost:3000
