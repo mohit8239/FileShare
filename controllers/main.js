@@ -6,6 +6,9 @@ import FileModel from "../models/file.js"
 import { v4 as uuidv4 } from "uuid"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { File } from "buffer"
+import sendMail from "../services/emailService.js"
+import mail from "../services/emailTemp.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -92,6 +95,36 @@ class Main{
         });
     
     }
+    static SendMail = async(req,res)=>{
+        //Validate Request
+        const {uuid,emailTo,emailFrom} = req.body
+         if(!uuid || !emailTo || !emailFrom){
+            res.status(422).send({"message":"All fields are required"})
+         }
+         //Get data from database
+         const File = await FileModel.find({uuid:uuid})
+         if(File.sender){
+          return res.send({"message":"Email already sent"})  
+         }
+         File.sender = emailFrom;
+         File.receiver = emailTo;
+         const response = await File.save()
+         
+         //Send Email
+            sendMail({
+                from: emailFrom,
+                to:emailTo,
+                subject: "FileShare",
+                text:`${emailFrom} shared a File with you`,
+                html:mail({
+                    emailFrom:emailFrom,
+                    downloadLink:`${process.env.APP_BASE_URL}/files/${File.uuid}`,
+                    size:File.size,
+                    expires:'24 hours'
+                })
+            })
+
+}
 }
 
 export default Main
