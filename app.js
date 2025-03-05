@@ -10,6 +10,7 @@ import show from './routes/download.js'
 
 ConnectDB()
 app.use(express.static('public'));
+app.use(express.json())
 
 app.set('view engine','ejs')
 

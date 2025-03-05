@@ -102,7 +102,7 @@ class Main{
             res.status(422).send({"message":"All fields are required"})
          }
          //Get data from database
-         const File = await FileModel.find({uuid:uuid})
+         const File = await FileModel.findOne({uuid:uuid})
          if(File.sender){
           return res.send({"message":"Email already sent"})  
          }
@@ -123,6 +123,8 @@ class Main{
                     expires:'24 hours'
                 })
             })
+
+            return res.send({"message":"Email Sent"})
 
 }
 }
